@@ -1,14 +1,23 @@
 import logo from './logo.svg';
 import './App.css';
 import React from "react";
-import Board from "./board";
 
 function Circle() {
-   return (
-       <div>
-           <Board/>
-       </div>
-   );
+    return (
+        <div height="110" width="500">
+            <circle1
+                cx="50"
+                cy="55"
+                r="45"
+                fill="none"
+                stroke="#F0CE01"
+                strokeWidth="4"
+            />
+
+
+        </div>
+
+    );
 }
 
 function changeColor() {
@@ -196,4 +205,4 @@ class App extends React.Component {
  }
 
 }
-export default Circle;
+export default App;
