@@ -1,9 +1,8 @@
 import React from "react";
 
-function Statistics () {
-    return (
-        <div> this is the Statistics</div>
-    )
+class Statistics extends React.Component {
+
+
 
 
 }

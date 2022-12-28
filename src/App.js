@@ -56,8 +56,8 @@ class App extends React.Component {
                 <NavLink style={{margin: "10px"}} to={"/Statistics"}> Statistics </NavLink>
 
                 <Routes>
-                    <Route path={"/"} element={<Tables/>}/>
                     <Route path={"/ResultHistory"} element={<ResultHistory/>}/>
+                    <Route path={"/Tables"} element={<Tables/>}/>
                     <Route path={"/TopScorers"} element={<TopScorers/>}/>
                     <Route path={"/Statistics"} element={<Statistics/>}/>
 

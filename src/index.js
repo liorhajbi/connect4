@@ -2,12 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Tables from './Tables';
+import App from "./App";
 import reportWebVitals from './reportWebVitals';
+import ResultHistory from "./ResultHistory";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Tables />
+    <App />
   </React.StrictMode>
 );
 
