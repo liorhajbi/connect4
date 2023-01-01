@@ -5,6 +5,7 @@ import Tables from './Tables';
 import App from "./App";
 import reportWebVitals from './reportWebVitals';
 import ResultHistory from "./ResultHistory";
+import TopScorers from "./TopScorers"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

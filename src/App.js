@@ -16,7 +16,6 @@ class App extends React.Component {
 
     findLeague = () => {
         axios.get('https://app.seker.live/fm1/leagues').then((response) => {
-            debugger;
             let array = [response.data[0].name, response.data[1].name, response.data[2].name]
             this.setState({
                 leagues: array
