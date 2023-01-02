@@ -1,34 +1,33 @@
 import React from "react";
 import axios from "axios";
-import ResultHistory from "./ResultHistory";
+import SelectLeague from "./selectLeague";
 
 
 class Tables extends React.Component {
     state = {
         groups: [], current : "none", value:0 , players : []
     }
-    findNameGroup = () => {
+    findNameGroup = (id) => {
         let i = 0
         let array = []
-        axios.get('https://app.seker.live/fm1/teams/3').then((response) => {
+        axios.get('https://app.seker.live/fm1/teams/' + id ).then((response) => {
             this.setState({
                 groups: response.data
             })
         })
 
     }
-    componentDidMount() {
-        this.findNameGroup()
-        this.findPlayers()
-    }
-    findPlayers = () =>{
+    // componentDidMount() {
+    //     this.findNameGroup()
+    //     this.findPlayers()
+    // }
+    findPlayers = (item) =>{
         let i=0
         let thePlayers = []
-        debugger
+        let name = item.target.value
+        alert(name)
         axios.get('https://app.seker.live/fm1/squad/2/20').then((response) => {
-            debugger
             while (i< response.data.length) {
-                debugger
                 let firstName = response.data[i].firstName;
                 let lastName = response.data[i].lastName;
                 let player = {firstName,lastName }
@@ -46,13 +45,13 @@ class Tables extends React.Component {
     render() {
         return (
             <div className="Tables">
+                <SelectLeague responseClick = {this.findNameGroup.bind(this)} ></SelectLeague>
                 <table>
                     {
-                        this.state.groups.map((item)=>{
+                        this.state.groups.map((item, itemIndex)=>{
                             return(
                                 <tr>
-                                    <td>
-                                        {item.name}
+                                    <td > {item.name}
                                     </td>
                                 </tr>
 

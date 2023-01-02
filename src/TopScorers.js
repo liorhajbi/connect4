@@ -1,19 +1,20 @@
 import React from "react";
 import axios from "axios";
+import SelectLeague from "./selectLeague";
 
 class TopScorers extends React.Component {
     state = { scoring : [] , topThree : []
 
     }
 
-    findWhoTopScores  = () => {
+    findWhoTopScores  = (id) => {
         let j =0;
         let i=0
         let k =0
         let m =0;
         let count =0
         let thePlayer = []
-        axios.get('https://app.seker.live/fm1/history/3/').then((response) => {
+        axios.get('https://app.seker.live/fm1/history/' + id).then((response) => {
             while (m<response.data.length) {
 
                 while (k < response.data[m].goals.length){
@@ -77,13 +78,11 @@ class TopScorers extends React.Component {
 
     }
 
-    componentDidMount() {
-        this.findWhoTopScores()
-    }
-    render() {
+       render() {
         return (
             <div className="ResultHistory">
-                <button onClick={this.threeMax}></button>
+                <SelectLeague responseClick = {this.findWhoTopScores.bind(this)} ></SelectLeague>
+
         <table>
             {
                 this.state.topThree.map((item) => {

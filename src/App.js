@@ -35,7 +35,6 @@ class App extends React.Component {
     render() {
         return (
             <div className="App">
-                <button> gg </button>
 
                 <select value={this.state.current} onChange={this.changeLeague}>
                     <option value={"none"} disabled={true}> SELECT LEAGUE </option>
