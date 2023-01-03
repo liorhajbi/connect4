@@ -12,11 +12,13 @@ findResult = (id) =>{
     let theResult = []
     let i=0
     let k=0
+    let m=0
     axios.get('https://app.seker.live/fm1/history/' + id).then((response) => {
         while (i<response.data.length) {
             let group1 =response.data[k].homeTeam.name
             let group2 =response.data[k].awayTeam.name
-            let point1 = this.sumGoals(response)
+            let point1 = this.sumGoals(response ,m)
+            m++
             let point2 = response.data[k].goals.length - point1
             let round = response.data[k].round
             let game = {group1 , point1 , group2 , point2 , round }
@@ -30,19 +32,18 @@ findResult = (id) =>{
 
     })
 }
-sumGoals= (response) =>{
+sumGoals= (response,m) =>{
     let j=0
     let count =0
     let k=0
-        while (j <response.data[k].goals.length) {
-            if (response.data[k].goals[j].home) {
+        while (j <response.data[m].goals.length) {
+            if (response.data[m].goals[j].home) {
                 count++
             }
             j++
             k++
         }
         return count;
-
 }
 
 sortByRound = () => {
@@ -78,7 +79,6 @@ debugger
                 <div> max</div>
                 <input id={"max"} type={"number"}min={1} max={15}/>
                 <button onClick={this.sortByRound}> OK</button>
-
                 <table>
                     {
                         this.state.result.map((item)=>{

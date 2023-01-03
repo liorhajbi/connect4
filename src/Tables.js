@@ -5,7 +5,7 @@ import SelectLeague from "./selectLeague";
 
 class Tables extends React.Component {
     state = {
-        groups: [], current : "none", value:0 , players : []
+        groups: [], current : "none", value:0 , players : [] , result : []
     }
     findNameGroup = (id) => {
         let i = 0
@@ -15,6 +15,7 @@ class Tables extends React.Component {
                 groups: response.data
             })
         })
+        this.findResult(id)
 
     }
     // componentDidMount() {
@@ -37,15 +38,52 @@ class Tables extends React.Component {
             this.setState( {
                 players : thePlayers
             })
-
     })
 
+    }
+
+    findResult = (id) =>{
+        let theResult = []
+        let i=0
+        let k=0
+        let m =0
+        axios.get('https://app.seker.live/fm1/history/1/900').then((response) => {
+            while (i<response.data.length) {
+                let group1 =response.data[k].homeTeam.name
+                let group2 =response.data[k].awayTeam.name
+                let point1 = this.sumGoals(response ,m)
+                m++
+                let point2 = response.data[k].goals.length - point1
+                let round = response.data[k].round
+                let game = {group1 , point1 , group2 , point2 , round }
+                theResult.push(game)
+                this.setState( {
+                    result: theResult,
+                })
+                i++
+                k++
+            }
+
+        })
+    }
+    sumGoals= (response,m) =>{
+        let j=0
+        let count =0
+        let k=0
+        while (j <response.data[m].goals.length) {
+            if (response.data[m].goals[j].home) {
+                count++
+            }
+            j++
+        }
+        return count;
     }
 
     render() {
         return (
             <div className="Tables">
                 <SelectLeague responseClick = {this.findNameGroup.bind(this)} ></SelectLeague>
+
                 <table>
                     {
                         this.state.groups.map((item, itemIndex)=>{
@@ -55,6 +93,17 @@ class Tables extends React.Component {
                                     </td>
                                 </tr>
 
+                            )
+                        })
+                    }
+                    {
+                        this.state.result.map((item)=>{
+                            return(
+                                <tr>
+                                    <td>
+                                        {item.group1 + "  " + item.point1  +" - "+item.point2 + "  " + item.group2}
+                                    </td>
+                                </tr>
                             )
                         })
                     }
