@@ -35,20 +35,8 @@ class App extends React.Component {
     render() {
         return (
             <div className="App">
-
-                <select value={this.state.current} onChange={this.changeLeague}>
-                    <option value={"none"} disabled={true}> SELECT LEAGUE </option>
-                    {
-                        this.state.leagues.map((item) => {
-                        return (
-                        <option value = {item}>{item}</option>
-                        )
-                    })
-                    }
-                </select>
-
             <BrowserRouter>
-                <NavLink style={{margin: "10px"}} to={"/Tables"}> Tables </NavLink>
+                <NavLink  style={{margin: "10px"}} to={"/Tables"}> Tables </NavLink>
                 <NavLink style={{margin: "10px"}} to={"/ResultHistory"}> ResultHistory </NavLink>
                 <NavLink style={{margin: "10px"}} to={"/TopScorers"}> TopScorers </NavLink>
                 <NavLink style={{margin: "10px"}} to={"/Statistics"}> Statistics </NavLink>

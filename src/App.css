@@ -1,13 +1,23 @@
 select {
-    size: 20px;
-    background-color: palevioletred;
-    text-align: center;
-    margin: 0 auto;
+
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+
+}
+td {
 
 }
 
 
+
+
 button {
+    position: absolute;
+    left: 58%;
+    top: 5%;
+    transform: translate(-50%, -50%);
     align-items: center;
     background-color: #fee6e3;
     border: 2px solid #111;
@@ -18,12 +28,9 @@ button {
     display: flex;
     font-family: Inter,sans-serif;
     font-size: 16px;
-    height: 48px;
     justify-content: center;
     line-height: 24px;
-    max-width: 100%;
-    padding: 0 25px;
-    position: relative;
+    max-width: 20%;
     text-align: center;
     text-decoration: none;
     user-select: none;
