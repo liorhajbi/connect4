@@ -5,7 +5,7 @@ import SelectLeague from "./selectLeague";
 
 class Tables extends React.Component {
     state = {
-        groups: [], current : "none", value:0 , players : [] , result : [] , winnerArray : []
+        groups: [], current : "none", value:0 , players : [] , result : [] , winnerArray : [] , GroupId: "none"
     }
     findNameGroup = (id) => {
         axios.get('https://app.seker.live/fm1/teams/' + id ).then((response) => {
@@ -14,11 +14,8 @@ class Tables extends React.Component {
                 current : id
             })
         })
+        this.findWinner(id)
     }
-    // componentDidMount() {
-    //     this.findNameGroup()
-    //     this.findPlayers()
-    // }
     findPlayers = (id) =>{
         let i=0
         let thePlayers = []
@@ -35,18 +32,38 @@ class Tables extends React.Component {
             })
     })
         this.findResult(id)
-        this.findWinner()
-
+    }
+    ifWinner = (name , ifWin) => {
+        let arrayOfWins = this.state.winnerArray
+        let ifExist = false
+        let pointToAdd;
+        if (ifWin) {
+            pointToAdd =3
+        }
+        else {
+            pointToAdd =1
+        }
+        for (let j = 0; j <arrayOfWins.length ; j++) {
+            if (arrayOfWins[j].name === name) {
+                ifExist = true
+                arrayOfWins[j].win += pointToAdd
+            }
+        }
+        if (!ifExist) {
+            arrayOfWins.push({name,win: pointToAdd})
+        }
+        this.setState( {
+            winnerArray : arrayOfWins.sort((a, b) => b.win - a.win)
+        })
     }
 
 
 
+
     findWinner = () =>{
-        let theResult = []
         let i=0
         let k=0
         let m =0
-        let arrayOfWins = []
         axios.get('https://app.seker.live/fm1/history/'+ this.state.current+ "/" ).then((response) => {
             while (i<response.data.length) {
                 let group1 =response.data[k].homeTeam.name
@@ -54,66 +71,19 @@ class Tables extends React.Component {
                 let point1 = this.sumGoals(response ,m)
                 m++
                 let point2 = response.data[k].goals.length - point1
-                let game = {group1 , point1 , group2 , point2  }
-                let ifExistGroup = false
                 if (point1 > point2) {
                     let name = group1
-                    let win = 3
-                    for (let j = 0; j <arrayOfWins.length ; j++) {
-                        if (arrayOfWins[j].name === name) {
-                            ifExistGroup = true
-                            arrayOfWins[j].win += 3
-                        }
-                    }
-                    if (!ifExistGroup) {
-                        arrayOfWins.push({name,win})
-                    }
+                    this.ifWinner(name, true)
                 }
-
                 if (point1 < point2) {
                     let name = group2
-                    let win = 3
-                    for (let j = 0; j <arrayOfWins.length ; j++) {
-                        if (arrayOfWins[j].name === name) {
-                            ifExistGroup = true
-                            arrayOfWins[j].win += 3
-                        }
-                    }
-                    if (!ifExistGroup) {
-                        arrayOfWins.push({name,win})
-                    }
+                    this.ifWinner(name,true)
                 }
-
                 if (point1 === point2) {
                     let name = group1
-                    let win = 1
-                    for (let j = 0; j <arrayOfWins.length ; j++) {
-                        if (arrayOfWins[j].name === name) {
-                            ifExistGroup = true
-                            arrayOfWins[j].win ++
-                        }
-                    }
-
-                    if (!ifExistGroup) {
-                        arrayOfWins.push({name,win})
-                    }
-
-                    ifExistGroup = false
+                    this.ifWinner(name,false)
                     name = group2
-                    for (let j = 0; j <arrayOfWins.length ; j++) {
-                        if (arrayOfWins[j].name === name) {
-                            ifExistGroup = true
-                            arrayOfWins[j].win ++
-                        }
-                    }
-                    if (!ifExistGroup) {
-                        arrayOfWins.push({name,win})
-                    }
-
-                    this.setState( {
-                        winnerArray: arrayOfWins,
-
-                    })
+                    this.ifWinner(name,false)
 
                 }
 
@@ -122,6 +92,7 @@ class Tables extends React.Component {
             }
 
         })
+
     }
 
 
@@ -172,6 +143,11 @@ class Tables extends React.Component {
         }
         return count;
     }
+    groupChanged = (event) => {
+        this.setState({
+            GroupId: event.target.value
+        })
+    }
 
     render() {
         return (
@@ -180,10 +156,10 @@ class Tables extends React.Component {
 
                 <table>
                     {
-                        this.state.groups.map((item)=>{
+                        this.state.winnerArray.map((item)=>{
                             return(
                                 <tr>
-                                    <td onClick={() => this.findPlayers(item.id)} > {item.name}
+                                    <td onChange={this.groupChanged} onClick={() => this.findPlayers("607")} >   {item.name + "  "  +item.win}
                                     </td>
                                 </tr>
 
@@ -213,18 +189,7 @@ class Tables extends React.Component {
                             )
                         })
                     }
-                    {
-                        this.state.winnerArray.map((item)=>{
-                            return(
-                                <tr>
-                                    <td>
-                                        {item.name + "  "  +item.win}
-                                    </td>
-                                </tr>
 
-                            )
-                        })
-                    }
 
                 </table>
 
