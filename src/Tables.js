@@ -35,10 +35,10 @@ class Tables extends React.Component {
             })
     })
 
-          this.findResult(id)
+       //   this.findResult(id)
     }
 
-    ifWinner = (name,id , pointToAdd) => {
+    addPoints = (name, id , pointToAdd) => {
         let arrayOfWins = this.state.winnerArray
         let ifExist = false
         for (let j = 0; j <arrayOfWins.length ; j++) {
@@ -62,6 +62,8 @@ class Tables extends React.Component {
         let i=0
         let k=0
         let m =0
+        let j =0
+        let goalsDifference =[]
         axios.get('https://app.seker.live/fm1/history/'+ this.state.current+ "/" ).then((response) => {
             while (i<response.data.length) {
                 let group1 =response.data[k].homeTeam.name
@@ -73,22 +75,159 @@ class Tables extends React.Component {
                 let point2 = response.data[k].goals.length - point1
                 let array = [0,1,3]
                 if (point1 > point2) {
-                    this.ifWinner(group1,id1, array[2])
-                    this.ifWinner(group2,id2, array[0])
+                    this.addPoints(group1,id1, array[2])
+                    this.addPoints(group2,id2, array[0])
                 }
                 if (point1 < point2) {
-                    this.ifWinner(group2,id2,array[2])
-                    this.ifWinner(group1,id1,array[0])
+                    this.addPoints(group2,id2,array[2])
+                    this.addPoints(group1,id1,array[0])
                 }
                 if (point1 === point2) {
                     let name = group1
-                    this.ifWinner(name,id1,array[1])
+                    this.addPoints(name,id1,array[1])
                     name = group2
-                    this.ifWinner(name,id2,array[1])
+                    this.addPoints(name,id2,array[1])
                 }
                 i++
                 k++
+                let name = group1
+                let countGoal = this.sumGoals(response,m)
+                let countRival =0
+                while (j < response.data.length){
+                    for (let l = 0; l < response.data[j].goals.length; l++) {
+                        if (name === response.data[j].homeTeam.name){
+                            if (!response.data[j].goals[l].home){
+
+                                countRival++
+                            }
+                        }
+                        if (name === response.data[j].awayTeam.name){
+                            if (response.data[j].goals[l].home){
+
+                                countRival++
+                            }
+                        }
+                    }
+                    j++
+                }
+                name = group2
+                countGoal = this.sumGoals(response,m)
+                countRival =0
+                while (j < response.data.length){
+                    for (let l = 0; l < response.data[j].goals.length; l++) {
+                        if (name === response.data[j].homeTeam.name){
+                            if (response.data[j].goals[l].home){
+                                countRival++
+                            }
+                        }
+                        if (name === response.data[j].awayTeam.name){
+                            if (!response.data[j].goals[l].home){
+
+                                countRival++
+                            }
+                        }
+                    }
+                    j++
+                }
+
+                let difference = countGoal-countRival
+                let differenceGoals = {name , difference}
+                let ifExist =false
+                for (let l = 0; l < goalsDifference.length; l++) {
+                    if (name === goalsDifference[l].name) {
+                        ifExist =true
+                    }
+                }
+                if (!ifExist){
+
+                    goalsDifference.push(differenceGoals)
+                    this.setState({
+                        differenceGoal : goalsDifference.sort((a,b) =>(b.difference - a.difference))
+                    })
+                }
             }
+
+
+        })
+
+    }
+
+
+    findD = () =>{
+        let i=0
+        let k=0
+        let m =0
+        let j =0
+        let goalsDifference =[]
+        axios.get('https://app.seker.live/fm1/history/'+ this.state.current+ "/" ).then((response) => {
+
+            while (i<response.data.length) {
+                let group1 =response.data[k].homeTeam.name
+                let group2 =response.data[k].awayTeam.name
+                let id1 = response.data[k].homeTeam.id
+                let id2 = response.data[k].awayTeam.id
+                let point1 = this.sumGoals(response ,m)
+                m++
+                let point2 = response.data[k].goals.length - point1
+                i++
+                k++
+                let name = group1
+                let countGoal = this.sumGoals(response,m)
+                let countRival =0
+                while (j < response.data.length){
+                    for (let l = 0; l < response.data[j].goals.length; l++) {
+                        if (name === response.data[j].homeTeam.name){
+                            if (!response.data[j].goals[l].home){
+
+                                countRival++
+                            }
+                        }
+                        if (name === response.data[j].awayTeam.name){
+                            if (response.data[j].goals[l].home){
+
+                                countRival++
+                            }
+                        }
+                    }
+                    j++
+                }
+                name = group2
+                 countGoal = this.sumGoals(response,m)
+                 countRival =0
+                while (j < response.data.length){
+                    for (let l = 0; l < response.data[j].goals.length; l++) {
+                        if (name === response.data[j].homeTeam.name){
+                            if (response.data[j].goals[l].home){
+                                countRival++
+                            }
+                        }
+                        if (name === response.data[j].awayTeam.name){
+                            if (!response.data[j].goals[l].home){
+
+                                countRival++
+                            }
+                        }
+                    }
+                    j++
+                }
+
+                let difference = countGoal-countRival
+                let differenceGoals = {name , difference}
+                let ifExist =false
+                for (let l = 0; l < goalsDifference.length; l++) {
+                    if (name === goalsDifference[l].name) {
+                        ifExist =true
+                    }
+                }
+                if (!ifExist){
+
+                    goalsDifference.push(differenceGoals)
+                    this.setState({
+                        differenceGoal : goalsDifference
+                    })
+                }
+            }
+
         })
 
 
@@ -216,7 +355,7 @@ class Tables extends React.Component {
                             return(
                                 <tr>
                                     <td>
-                                        {item.nameGroup + "  "  +item.goalDifference}
+                                        {item.name + "  " + item.difference}
                                     </td>
                                 </tr>
 
