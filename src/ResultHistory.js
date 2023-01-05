@@ -5,7 +5,7 @@ import SelectLeague from "./selectLeague";
 class ResultHistory extends React.Component {
 
     state= {
-        result : [] , arrayWithSort :[]
+        result : [] , arrayWithSort :[] , maxRound : ""
     }
 
 findResult = (id) =>{
@@ -13,6 +13,7 @@ findResult = (id) =>{
     let i=0
     let k=0
     let m=0
+    let roundMax =0
     axios.get('https://app.seker.live/fm1/history/' + id).then((response) => {
         while (i<response.data.length) {
             let group1 =response.data[k].homeTeam.name
@@ -21,6 +22,12 @@ findResult = (id) =>{
             m++
             let point2 = response.data[k].goals.length - point1
             let round = response.data[k].round
+            if (round> roundMax) {
+                roundMax =round
+                this.setState( {
+                    maxRound : roundMax
+                })
+            }
             let game = {group1 , point1 , group2 , point2 , round }
             theResult.push(game)
             this.setState( {
@@ -51,9 +58,14 @@ sortByRound = () => {
     let i = 0
     let arraySort = []
     let min = document.getElementById("min").value;
+    if (min === "") {
+        min=0
+    }
     let max = document.getElementById("max").value;
-    alert(min + "min" + max + "max")
-debugger
+    if (max === ""){
+        max = this.state.maxRound
+    }
+
     while (j < this.state.result.length) {
         if (this.state.result[j].round >= min && this.state.result[j].round<= max) {
             arraySort.push(this.state.result[j])
@@ -80,17 +92,7 @@ debugger
                 <input id={"max"} type={"number"}min={1} max={15}/>
                 <button onClick={this.sortByRound}> OK</button>
                 <table>
-                    {
-                        this.state.result.map((item)=>{
-                            return(
-                                <tr>
-                                    <td>
-                                        {item.group1 + "  " + item.point1  +" - "+item.point2 + "  " + item.group2}
-                                    </td>
-                                </tr>
-                            )
-                        })
-                    }
+
                     {
                         this.state.arrayWithSort.map((item)=>{
                             return(

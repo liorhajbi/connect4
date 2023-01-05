@@ -3,10 +3,33 @@ select {
     position: absolute;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+h2 {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    font-family: Serif;
+    text-align: center;
 
+    transform: translate(-50%, -50%);
 
 }
 td {
+  left: 280%;
+    margin-bottom: 20px;
+    text-align: center;
+    position: relative;
+
+}
+table{
+    position: absolute;
+    right: 80%;
+
+    top: 40%;
+    font-family: Serif;
+    text-align: center;
+    font-size: 30px;
+    transform: translate(-50%, -50%);
 
 }
 

@@ -5,8 +5,8 @@ import ResultHistory from "./ResultHistory";
 
 class Statistics extends React.Component {
     state = {
-        half1: 0, half2: 0, goals: [] , earliestGoal : 0 , latestGoal : 0 , arrayRound : []
-       , roundMax : 0 , roundMin :0 , max: 0 , min : 0
+        half1: "", half2: "", goals: [] , earliestGoal : "" , latestGoal : "" , arrayRound : []
+       , roundMax : "" , roundMin :"" , max: "" , min : ""
     }
 
     findGoals = (id) => {
@@ -64,9 +64,7 @@ class Statistics extends React.Component {
                 i++
                 j = 0
             }
-            alert(countHalf1 + " half1  " + countHalf2 + " half2 ")
-            alert(earliest + "  earliest " + latest + " latest")
-            alert(maxGoal + " max goal")
+
             this.setState({
                 half1: countHalf1,
                 half2: countHalf2,
@@ -145,11 +143,9 @@ class Statistics extends React.Component {
                 max: max , min:min
 
             })
-            alert(  )
         })
 
-
-        }
+    }
 
 
 
@@ -160,29 +156,21 @@ class Statistics extends React.Component {
         return (
             <div className="Statistics">
             <SelectLeague responseClick = {this.findGoals.bind(this)} ></SelectLeague>
-                {
-                    "first half: " + this.state.half1 + " second half:" + this.state.half2
+                <h2> {
+                    "first half: ," + this.state.half1 + " second half: " + this.state.half2
                 }
-                {
-                     " earliest goal: " +this.state.earliestGoal + " latest goal : " + this.state.latestGoal
-                }
-                {
-                    " round max: "+ this.state.roundMax + " sum:" + this.state.max + " round min: "+this.state.roundMin + " sum:" + this.state.min                }
-                <table>
+
+                    <br/>
                     {
-                        this.state.arrayRound.map((item)=>{
-                            return(
-                                <tr>
-                                    <td>
-                                        {item.round + " " + item.sum}
-                                    </td>
-                                </tr>
-
-
-                            )
-                        })
+                        " earliest goal: ," +this.state.earliestGoal + " latest goal : " + this.state.latestGoal
                     }
-                    </table>
+                    <br/>
+                    {
+                        " round max: " + this.state.roundMax + " sum: ," + this.state.max + " round min: " + this.state.roundMin + " sum:" + this.state.min
+                    }
+                        </h2>
+               }
+
 
 
 

@@ -92,6 +92,7 @@ class TopScorers extends React.Component {
                                 {item.name + " " + item.count}
                             </td>
 
+
                         </tr>
 
                     )
