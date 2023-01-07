@@ -94,7 +94,7 @@ sortByRound = () => {
                             return(
                                 <tr>
                                     <td>
-                                        {item.group1 + "  " + item.point1  +" - "+item.point2 + "  " + item.group2 + " " + item.round}
+                                        {item.group1 + "  " + item.point1  +" - "+item.point2 + "  " + item.group2 }
                                     </td>
                                 </tr>
                             )
