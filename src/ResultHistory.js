@@ -42,13 +42,11 @@ findResult = (id) =>{
 sumGoals= (response,m) =>{
     let j=0
     let count =0
-    let k=0
         while (j <response.data[m].goals.length) {
             if (response.data[m].goals[j].home) {
                 count++
             }
             j++
-            k++
         }
         return count;
 }
@@ -86,9 +84,9 @@ sortByRound = () => {
             <div className="ResultHistory">
                 <SelectLeague responseClick = {this.findResult.bind(this)} ></SelectLeague>
                 <div id={"minText"}> min</div>
-                <input id={"min"} type={"number"}min={this.state.minChose} max={this.state.maxRound}/>
+                <input id={"min"} type={"number"} min={this.state.minChose} max={this.state.maxRound}/>
                 <div id={"maxText"}> max</div>
-                <input id={"max"} type={"number"}min={this.state.minChose} max={this.state.maxRound}/>
+                <input id={"max"} type={"number"} min={this.state.minChose} max={this.state.maxRound}/>
                 <button id={"okButton"} onClick={this.sortByRound}> OK</button>
                 <table>
                     {

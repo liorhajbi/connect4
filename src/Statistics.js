@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
 import SelectLeague from "./selectLeague";
-import ResultHistory from "./ResultHistory";
 
 class Statistics extends React.Component {
     state = {
@@ -40,7 +39,6 @@ class Statistics extends React.Component {
         let countHalf2 = 0
         let earliest=90
         let latest=0
-        let maxGoal = 0
         axios.get('https://app.seker.live/fm1/history/' + id).then((response) => {
             while (i < response.data.length) {
                 while (j < response.data[i].goals.length) {

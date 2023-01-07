@@ -203,7 +203,6 @@ class Tables extends React.Component {
     sumGoals= (response,m) =>{
         let j=0
         let count =0
-        let k=0
         while (j <response.data[m].goals.length) {
             if (response.data[m].goals[j].home) {
                 count++
