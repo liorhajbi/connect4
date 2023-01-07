@@ -3,7 +3,7 @@ import axios from "axios";
 import SelectLeague from "./selectLeague";
 
 class TopScorers extends React.Component {
-    state = { scoring : [] , topThree : []
+    state = { scoring : [] , topThree : [] , first : "" , theFirst : 0 , theThird:3
 
     }
 
@@ -47,7 +47,7 @@ class TopScorers extends React.Component {
                     ifExist = false
                     this.setState( {
                         scoring : thePlayer ,
-                        topThree : this.state.scoring.sort((a, b) => b.count - a.count).slice(0,3)
+                        topThree : this.state.scoring.sort((a, b) => b.count - a.count).slice(this.state.theFirst,this.state.theThird),
                     })
                             i++
                             k++
@@ -60,53 +60,30 @@ class TopScorers extends React.Component {
         })
     }
 
-
-
-
-
-
-
-
-    ifInArray = ( something , array) => {
-        let ifExist =false
-        for (let i = 0; i < array.length; i++) {
-            if (array[i]=== something){
-                ifExist = true
-            }
-        }
-        return ifExist
-
-    }
-
        render() {
         return (
             <div className="ResultHistory">
                 <SelectLeague responseClick = {this.findWhoTopScores.bind(this)} ></SelectLeague>
+                <table>
+                    {
+                        this.state.topThree.map((item) => {
+                            return (
+                                <tr id={"topTable"}>
+                                    <td>
+                                        {item.name + " " + item.count}
+                                    </td>
 
-        <table>
-            {
-                this.state.topThree.map((item) => {
-                    return (
-                        <tr>
-                            <td>
-                                {item.name + " " + item.count}
-                            </td>
 
+                                </tr>
 
-                        </tr>
+                            )
+                        })
+                    }
 
-                    )
-                })
-            }
-
-        </table>
+                </table>
             </div>
-
-
         )
     }
-
-
 }
 
 export default TopScorers;

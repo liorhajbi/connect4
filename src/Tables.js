@@ -6,17 +6,20 @@ import SelectLeague from "./selectLeague";
 class Tables extends React.Component {
     state = {
         groups: [], current : "none", value:0 , players : [] , result : [] , winnerArray : [] , GroupId: "none"
-        , differenceGoal : [] , differenceCurrent : " "
+        , differenceCurrent : " " , Equality :0 , lose :0 , win : 3 , equal : 1 , winner:2
     }
     findNameGroup = (id) => {
         axios.get('https://app.seker.live/fm1/teams/' + id ).then((response) => {
             this.setState({
                 groups: response.data ,
-                current : id
+                current : id,
+                winnerArray : [] ,
+                result : [],
+                players : []
             })
         })
 
-        this.findWinner(id)
+             this.findWinner(id)
 
     }
     findPlayers = (id) =>{
@@ -35,10 +38,10 @@ class Tables extends React.Component {
             })
     })
 
-       //   this.findResult(id)
+          this.findResult(id)
     }
 
-    addPoints = (name, id , pointToAdd) => {
+    addPoints = (name, id , pointToAdd , difference) => {
         let arrayOfWins = this.state.winnerArray
         let ifExist = false
         for (let j = 0; j <arrayOfWins.length ; j++) {
@@ -48,11 +51,22 @@ class Tables extends React.Component {
             }
         }
         if (!ifExist) {
-            let currentDifference = this.state.differenceCurrent
-            arrayOfWins.push({name,id,win: pointToAdd , currentDifference})
+            arrayOfWins.push({name,id,win: pointToAdd ,difference})
         }
+        arrayOfWins.sort((a,b)=> {
+            let sortByScorer = (b.win - a.win)
+            if (sortByScorer===this.state.Equality) {
+                let sortByDifference = (b.difference - a.difference)
+                if (sortByDifference===this.state.Equality) {
+                    return (a.name.localeCompare(b.name))
+                }
+                return sortByDifference
+            }
+            return sortByScorer
+        })
+
         this.setState( {
-            winnerArray : arrayOfWins.sort((a,b) =>(b.win - a.win))
+            winnerArray : arrayOfWins
         })
     }
 
@@ -63,7 +77,6 @@ class Tables extends React.Component {
         let k=0
         let m =0
         let j =0
-        let goalsDifference =[]
         axios.get('https://app.seker.live/fm1/history/'+ this.state.current+ "/" ).then((response) => {
             while (i<response.data.length) {
                 let group1 =response.data[k].homeTeam.name
@@ -73,23 +86,6 @@ class Tables extends React.Component {
                 let point1 = this.sumGoals(response ,m)
                 m++
                 let point2 = response.data[k].goals.length - point1
-                let array = [0,1,3]
-                if (point1 > point2) {
-                    this.addPoints(group1,id1, array[2])
-                    this.addPoints(group2,id2, array[0])
-                }
-                if (point1 < point2) {
-                    this.addPoints(group2,id2,array[2])
-                    this.addPoints(group1,id1,array[0])
-                }
-                if (point1 === point2) {
-                    let name = group1
-                    this.addPoints(name,id1,array[1])
-                    name = group2
-                    this.addPoints(name,id2,array[1])
-                }
-                i++
-                k++
                 let name = group1
                 let countGoal = this.sumGoals(response,m)
                 let countRival =0
@@ -131,107 +127,33 @@ class Tables extends React.Component {
                 }
 
                 let difference = countGoal-countRival
-                let differenceGoals = {name , difference}
-                let ifExist =false
-                for (let l = 0; l < goalsDifference.length; l++) {
-                    if (name === goalsDifference[l].name) {
-                        ifExist =true
-                    }
+
+
+
+                let array = [this.state.lose,this.state.equal,this.state.win]
+                if (point1 > point2) {
+                    this.addPoints(group1,id1, array[this.state.winner],difference)
+                    this.addPoints(group2,id2, array[this.state.lose],difference)
                 }
-                if (!ifExist){
-
-                    goalsDifference.push(differenceGoals)
-                    this.setState({
-                        differenceGoal : goalsDifference.sort((a,b) =>(b.difference - a.difference))
-                    })
+                if (point1 < point2) {
+                    this.addPoints(group2,id2,array[this.state.winner],difference)
+                    this.addPoints(group1,id1,array[this.state.lose],difference)
                 }
-            }
-
-
-        })
-
-    }
-
-
-    findD = () =>{
-        let i=0
-        let k=0
-        let m =0
-        let j =0
-        let goalsDifference =[]
-        axios.get('https://app.seker.live/fm1/history/'+ this.state.current+ "/" ).then((response) => {
-
-            while (i<response.data.length) {
-                let group1 =response.data[k].homeTeam.name
-                let group2 =response.data[k].awayTeam.name
-                let id1 = response.data[k].homeTeam.id
-                let id2 = response.data[k].awayTeam.id
-                let point1 = this.sumGoals(response ,m)
-                m++
-                let point2 = response.data[k].goals.length - point1
+                if (point1 === point2) {
+                    let name = group1
+                    this.addPoints(name,id1,array[this.state.equal],difference)
+                    name = group2
+                    this.addPoints(name,id2,array[this.state.equal],difference)
+                }
                 i++
                 k++
-                let name = group1
-                let countGoal = this.sumGoals(response,m)
-                let countRival =0
-                while (j < response.data.length){
-                    for (let l = 0; l < response.data[j].goals.length; l++) {
-                        if (name === response.data[j].homeTeam.name){
-                            if (!response.data[j].goals[l].home){
 
-                                countRival++
-                            }
-                        }
-                        if (name === response.data[j].awayTeam.name){
-                            if (response.data[j].goals[l].home){
-
-                                countRival++
-                            }
-                        }
-                    }
-                    j++
                 }
-                name = group2
-                 countGoal = this.sumGoals(response,m)
-                 countRival =0
-                while (j < response.data.length){
-                    for (let l = 0; l < response.data[j].goals.length; l++) {
-                        if (name === response.data[j].homeTeam.name){
-                            if (response.data[j].goals[l].home){
-                                countRival++
-                            }
-                        }
-                        if (name === response.data[j].awayTeam.name){
-                            if (!response.data[j].goals[l].home){
-
-                                countRival++
-                            }
-                        }
-                    }
-                    j++
-                }
-
-                let difference = countGoal-countRival
-                let differenceGoals = {name , difference}
-                let ifExist =false
-                for (let l = 0; l < goalsDifference.length; l++) {
-                    if (name === goalsDifference[l].name) {
-                        ifExist =true
-                    }
-                }
-                if (!ifExist){
-
-                    goalsDifference.push(differenceGoals)
-                    this.setState({
-                        differenceGoal : goalsDifference
-                    })
-                }
-            }
-
         })
 
-
     }
+
+
 
 
 
@@ -240,7 +162,6 @@ class Tables extends React.Component {
         let i=0
         let k=0
         let m =0
-        let arrayDifference = []
         let countCurrentGroup =0
         let countRivals = 0
         let nameGroup;
@@ -279,20 +200,6 @@ class Tables extends React.Component {
             }
         })
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     sumGoals= (response,m) =>{
         let j=0
         let count =0
@@ -305,23 +212,20 @@ class Tables extends React.Component {
         }
         return count;
     }
-    groupChanged = (event) => {
-        this.setState({
-            GroupId: event.target.value
-        })
-    }
+
+
 
     render() {
         return (
             <div className="Tables">
                 <SelectLeague responseClick = {this.findNameGroup.bind(this)} ></SelectLeague>
-                <table>
+                <table id={"tablesId"} >
                     {
-                        this.state.winnerArray.map((item)=>{
+                        this.state.winnerArray.map((item, index)=>{
                             return(
-                                <tr>
-                                    <td onChange={this.groupChanged} onClick={() => this.findPlayers(item.id)} >
-                                        {item.name + "  "  +item.win + " " + item.currentDifference}
+                                <tr className={"emphasis league-table-tr " + ((index === this.state.lose) ? "top" : ((index >= (this.state.winnerArray.length - this.state.win)) ? "lower" : ""))}>
+                                    <td id={"T1"}  onClick={() => this.findPlayers(item.id)} >
+                                        {item.name + "  "  +item.win}
                                     </td>
                                 </tr>
                             )
@@ -331,7 +235,7 @@ class Tables extends React.Component {
                         this.state.result.map((item)=>{
                             return(
                                 <tr>
-                                    <td>
+                                    <td id={"T2"}>
                                         {item.group1 + "  " + item.point1  +" - "+item.point2 + "  " + item.group2}
                                     </td>
                                 </tr>
@@ -342,20 +246,8 @@ class Tables extends React.Component {
                         this.state.players.map((item)=>{
                             return(
                                 <tr>
-                                    <td>
+                                    <td id={"T3"}>
                                         {item.firstName + "  "  +item.lastName}
-                                    </td>
-                                </tr>
-
-                            )
-                        })
-                    }
-                    {
-                        this.state.differenceGoal.map((item)=>{
-                            return(
-                                <tr>
-                                    <td>
-                                        {item.name + "  " + item.difference}
                                     </td>
                                 </tr>
 

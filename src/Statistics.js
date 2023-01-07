@@ -6,14 +6,13 @@ import ResultHistory from "./ResultHistory";
 class Statistics extends React.Component {
     state = {
         half1: "", half2: "", goals: [] , earliestGoal : "" , latestGoal : "" , arrayRound : []
-       , roundMax : "" , roundMin :"" , max: "" , min : ""
+       , roundMax : "" , roundMin :"" , max: "" , min : "" , half :45 , start :0
     }
 
     findGoals = (id) => {
         let i = 0
         let j = 0
         let goalsArray = []
-        let maxGoal =0
         axios.get('https://app.seker.live/fm1/history/' + id).then((response) => {
             while (i < response.data.length) {
                 while (j < response.data[i].goals.length) {
@@ -45,7 +44,7 @@ class Statistics extends React.Component {
         axios.get('https://app.seker.live/fm1/history/' + id).then((response) => {
             while (i < response.data.length) {
                 while (j < response.data[i].goals.length) {
-                    if (response.data[i].goals[j].minute <= 45) {
+                    if (response.data[i].goals[j].minute <= this.state.half) {
                         countHalf1++
                     } else {
                         countHalf2++
@@ -74,18 +73,6 @@ class Statistics extends React.Component {
 
         })
         this.goalByRound(id)
-    }
-    sumGoals= (goals) =>{
-        debugger
-        let j=0
-        let count =0
-        let k=0
-        while (j <goals.length) {
-                debugger
-                count++
-            j++
-        }
-        return count;
     }
 
 
@@ -122,7 +109,7 @@ class Statistics extends React.Component {
             }
             let max =0
             let roundMax;
-            let min = array[0].sum
+            let min = array[this.state.start].sum
             let roundMin;
             debugger
             for (let k = 0; k <array.length ; k++) {

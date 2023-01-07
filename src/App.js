@@ -36,10 +36,10 @@ class App extends React.Component {
         return (
             <div className="App">
             <BrowserRouter>
-                <NavLink  style={{margin: "10px"}} to={"/Tables"}> Tables </NavLink>
-                <NavLink style={{margin: "10px"}} to={"/ResultHistory"}> ResultHistory </NavLink>
-                <NavLink style={{margin: "10px"}} to={"/TopScorers"}> TopScorers </NavLink>
-                <NavLink style={{margin: "10px"}} to={"/Statistics"}> Statistics </NavLink>
+                <NavLink id={"navLink1"} style={{margin: "10px"}} to={"/Tables"}> Tables </NavLink>
+                <NavLink id={"navLink2"} style={{margin: "10px"}} to={"/ResultHistory"}> ResultHistory </NavLink>
+                <NavLink id={"navLink3"} style={{margin: "10px"}} to={"/TopScorers"}> TopScorers </NavLink>
+                <NavLink id={"navLink4"} style={{margin: "10px"}} to={"/Statistics"}> Statistics </NavLink>
 
                 <Routes>
                     <Route path={"/ResultHistory"} element={<ResultHistory/>}/>

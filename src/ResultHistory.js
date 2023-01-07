@@ -5,7 +5,7 @@ import SelectLeague from "./selectLeague";
 class ResultHistory extends React.Component {
 
     state= {
-        result : [] , arrayWithSort :[] , maxRound : ""
+        result : [] , arrayWithSort :[] , maxRound : "" , minRound : 0 , minChose :0
     }
 
 findResult = (id) =>{
@@ -55,11 +55,10 @@ sumGoals= (response,m) =>{
 
 sortByRound = () => {
     let j = 0;
-    let i = 0
     let arraySort = []
     let min = document.getElementById("min").value;
     if (min === "") {
-        min=0
+        min=this.state.minRound
     }
     let max = document.getElementById("max").value;
     if (max === ""){
@@ -86,13 +85,12 @@ sortByRound = () => {
         return (
             <div className="ResultHistory">
                 <SelectLeague responseClick = {this.findResult.bind(this)} ></SelectLeague>
-                <div> min</div>
-                <input id={"min"} type={"number"}min={1} max={15}/>
-                <div> max</div>
-                <input id={"max"} type={"number"}min={1} max={15}/>
-                <button onClick={this.sortByRound}> OK</button>
+                <div id={"minText"}> min</div>
+                <input id={"min"} type={"number"}min={this.state.minChose} max={this.state.maxRound}/>
+                <div id={"maxText"}> max</div>
+                <input id={"max"} type={"number"}min={this.state.minChose} max={this.state.maxRound}/>
+                <button id={"okButton"} onClick={this.sortByRound}> OK</button>
                 <table>
-
                     {
                         this.state.arrayWithSort.map((item)=>{
                             return(
